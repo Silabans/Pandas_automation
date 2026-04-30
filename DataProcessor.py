@@ -45,11 +45,16 @@ class DataProcessor:
 
         return f"Cleaned! Removed {duplicates_removed} duplicates and dropped {dropped_count}"
     
-    def visualise_bar(self, *instances):
-        """ Plots bar graphs to compare single values across time, categories or instances. """
+    def summarize(self, *instances):
+        """ Summarises the important features of the data. """
         if self.df is None:
-            return "No data for graphing."
+            return "No data to summarise"
         
-        self.df.plot(kind="bar")
+        summary = self.df.describe()
+        return summary
+    
+processor = DataProcessor()
+processor.load_data("Teen_Mental_Health_Dataset.csv")
+print(processor.summarize())
     
         
