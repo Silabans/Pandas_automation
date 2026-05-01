@@ -33,28 +33,41 @@ class DataProcessor:
 
         # drops columns that are mostly empty (> 50%)
         limit = int(len(self.df) * drop_threshold)
-        self.df.dropna(thresh=limit, axis=1, inplace=True)
+        self.df = self.df.dropna(thresh=limit, axis=1)
 
         number_cols = self.df.select_dtypes(include=["number"]).columns
-        self.df["number_cols"] = self.df["number_cols"].fillna(self.df["number_cols"].mean())
+        if not number_cols.empty:
+            self.df[number_cols] = self.df[number_cols].fillna(self.df[number_cols].mean())
 
         object_cols = self.df.select_dtypes(include=["object"]).columns
-        self.df["object_cols"] = self.df["object_cols"].fillna("Unknown.")
+        if not object_cols.empty:
+            self.df[object_cols] = self.df[object_cols].fillna("Unknown.")
 
         dropped_count = initial_count - duplicates_removed - len(self.df)
 
         return f"Cleaned! Removed {duplicates_removed} duplicates and dropped {dropped_count}"
     
-    def summarize(self, *instances):
+    def summarize(self):
         """ Summarises the important features of the data. """
         if self.df is None:
             return "No data to summarise"
         
         summary = self.df.describe()
         return summary
+
+    def frequency(self, column, groupby):
+        grouped = self.df.groupby(groupby)
+        return grouped[column].value_counts()
+    
+    def get_df(self):
+        return self.df
+        
+    
     
 processor = DataProcessor()
 processor.load_data("Teen_Mental_Health_Dataset.csv")
-print(processor.summarize())
+
+
+
     
         
