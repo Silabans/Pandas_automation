@@ -70,7 +70,7 @@ class DataProcessor:
             return
         
         plt.figure(figsize=(10, 6))
-        plt.clf()
+
         if pd.api.types.is_numeric_dtype(data_to_plot):
             data_to_plot.hist(edgecolor='black')
         else:
@@ -81,8 +81,7 @@ class DataProcessor:
         title = column.replace("_", " ").capitalize()
         plt.title(f"Distribution of {title}")
         plt.ylabel("Frequency")
-        plt.show()
-        #plt.savefig(f'{column}_distribution_graph.png')
+        plt.savefig(f'{column}_distribution_graph.png')
 
 
     def get_df(self):
