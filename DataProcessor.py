@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import yfinance as yf
+import matplotlib.pyplot as plt
 
 class DataProcessor:
     def __init__(self):
@@ -59,6 +60,31 @@ class DataProcessor:
         grouped = self.df.groupby(groupby)
         return grouped[column].value_counts()
     
+    def plot_column(self, column):
+        if self.df is None or column not in self.df.columns:
+            print("Invalid column.")
+
+        data_to_plot = self.df[column].dropna()
+        if data_to_plot.empty:
+            print("There is no data to plot!")
+            return
+        
+        plt.figure(figsize=(10, 6))
+        plt.clf()
+        if pd.api.types.is_numeric_dtype(data_to_plot):
+            data_to_plot.hist(edgecolor='black')
+        else:
+            data_to_plot.value_counts().plot(kind='bar')
+            plt.xticks(rotation=30)
+
+        print(f"Generating a histogram for {column}...")
+        title = column.replace("_", " ").capitalize()
+        plt.title(f"Distribution of {title}")
+        plt.ylabel("Frequency")
+        plt.show()
+        #plt.savefig(f'{column}_distribution_graph.png')
+
+
     def get_df(self):
         return self.df
         
@@ -66,6 +92,7 @@ class DataProcessor:
     
 processor = DataProcessor()
 processor.load_data("Teen_Mental_Health_Dataset.csv")
+processor.plot_column("sleep_hours")
 
 
 
